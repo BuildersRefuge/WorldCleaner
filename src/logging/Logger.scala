@@ -17,7 +17,8 @@ object Logger {
     */
   def getCurrentTime: String = {
     val date = new Date()
-    val format = new SimpleDateFormat()
+    val timeformat = "yyyy-MM-dd HH:mm:ss"
+    val format = new SimpleDateFormat(timeformat)
     format.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"))
     format.format(date)
   }
