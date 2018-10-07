@@ -8,7 +8,6 @@ import java.util.{Date, SimpleTimeZone}
   * Logger responsible for writing to out log file.
   */
 object Logger {
-
   val fileName: String = "world-cleaner.log"
 
   /**
@@ -29,12 +28,19 @@ object Logger {
     * @param m String message to log.
     * @param l LogLevel severity of the logged message.
     */
-  def write(m: String, l: LogLevel.Value): Unit = {
-    val file = new File(fileName)
-    val bw = new BufferedWriter(new FileWriter(file))
-    val outputString = getCurrentTime() + " : " + "[" + l.toString + "]" + " -> " + m
-    bw.write(outputString)
-    bw.close()
+  def write(m: String, l: LogLevel.Value) = {
+    try {
+      val file = new File(fileName)
+      val bw = new BufferedWriter(new FileWriter(file, true))
+      val out = new PrintWriter(bw)
+      val outputString = getCurrentTime + " : " + "[" + l.toString + "]" + " -> " + m
+      out.println(outputString)
+      out.close()
+      bw.close()
+    }
+    catch {
+      case exception: IOException => System.err.println("IOException: " + exception.getMessage)
+    }
   }
 
   /**
