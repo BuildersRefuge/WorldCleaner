@@ -9,7 +9,7 @@ import java.util.{Date, SimpleTimeZone}
   */
 object Logger {
 
-  val fileName: String = "world-cleaner.log";
+  val fileName: String = "world-cleaner.log"
 
   /**
     * Get the current UTC time.
