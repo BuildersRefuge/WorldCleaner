@@ -8,6 +8,7 @@ import java.util.{Date, SimpleTimeZone}
   * Logger responsible for writing to out log file.
   */
 object Logger {
+  // Name of log file
   val fileName: String = "world-cleaner.log"
 
   /**
@@ -29,7 +30,7 @@ object Logger {
     * @param m String message to log.
     * @param l LogLevel severity of the logged message.
     */
-  def write(m: String, l: LogLevel.Value) = {
+  def write(m: String, l: LogLevel.Value): Unit = {
     try {
       val file = new File(fileName)
       val bw = new BufferedWriter(new FileWriter(file, true))
@@ -40,7 +41,8 @@ object Logger {
       bw.close()
     }
     catch {
-      case exception: IOException => System.err.println("IOException: " + exception.getMessage)
+      case ioe: IOException => System.err.println("IOException: " + ioe.getMessage)
+      case exception: Exception => System.err.println("Exception: " + exception.getMessage)
     }
   }
 
@@ -49,25 +51,27 @@ object Logger {
     *
     * @param m String message to log.
     */
-  def info(m: String): Unit = {
-    write(m, LogLevel.INFO)
-  }
+  def info(m: String): Unit = write(m, LogLevel.INFO)
+
 
   /**
     * Log a warning message.
     *
     * @param m String message to log.
     */
-  def warning(m: String): Unit = {
-    write(m, LogLevel.WARNING)
-  }
+  def warning(m: String): Unit = write(m, LogLevel.WARNING)
 
   /**
     * Log a error message.
     *
     * @param m String message to log.
     */
-  def error(m: String): Unit = {
-    write(m, LogLevel.ERROR)
-  }
+  def error(m: String): Unit = write(m, LogLevel.ERROR)
+
+  /**
+    * Log a debug message
+    *
+    * @param m String message to log
+    */
+  def debug(m: String): Unit = write(m, LogLevel.DEBUG)
 }
