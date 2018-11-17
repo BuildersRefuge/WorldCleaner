@@ -2,14 +2,13 @@ import config.Configuration
 import logging.Logger
 import models.Config
 
-object Main extends App {
+object Main  {
 
-  def run(): Unit = {
+  def main(args: Array[String]): Unit = {
     Logger.info("WorldCleaner starting")
     val config: Config = Configuration.getConfig
 
+
     Logger.info("WorldCleaner stopping")
   }
-
-  run()
 }
