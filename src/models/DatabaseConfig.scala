@@ -21,4 +21,8 @@ class DatabaseConfig {
     * Database name
     */
   var database: String = "database"
+  /**
+    * Database table
+    */
+  var table: String = "table"
 }
