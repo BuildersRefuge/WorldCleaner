@@ -27,15 +27,18 @@ object Logger {
   /**
     * Write a log message to the logfile.
     *
-    * @param m String message to log.
-    * @param l LogLevel severity of the logged message.
+    * @param message  String message to log.
+    * @param logLevel LogLevel severity of the logged message.
     */
-  def write(m: String, l: LogLevel.Value): Unit = {
+  def write(message: String, logLevel: LogLevel.Value, printToConsole: Boolean = false): Unit = {
     try {
       val file = new File(fileName)
       val bw = new BufferedWriter(new FileWriter(file, true))
       val out = new PrintWriter(bw)
-      val outputString = getCurrentTime + " : " + "[" + l.toString + "]" + " -> " + m
+      val outputString = getCurrentTime + " : " + "[" + logLevel.toString + "]" + " -> " + message
+      if (printToConsole) {
+        System.out.println(outputString)
+      }
       out.println(outputString)
       out.close()
       bw.close()
@@ -49,29 +52,29 @@ object Logger {
   /**
     * Log a info message.
     *
-    * @param m String message to log.
+    * @param message String message to log.
     */
-  def info(m: String): Unit = write(m, LogLevel.INFO)
+  def info(message: String, printToConsole: Boolean = false): Unit = write(message, LogLevel.INFO, printToConsole)
 
 
   /**
     * Log a warning message.
     *
-    * @param m String message to log.
+    * @param message String message to log.
     */
-  def warning(m: String): Unit = write(m, LogLevel.WARNING)
+  def warning(message: String, printToConsole: Boolean = false): Unit = write(message, LogLevel.WARNING, printToConsole)
 
   /**
     * Log a error message.
     *
-    * @param m String message to log.
+    * @param message String message to log.
     */
-  def error(m: String): Unit = write(m, LogLevel.ERROR)
+  def error(message: String, printToConsole: Boolean = false): Unit = write(message, LogLevel.ERROR, printToConsole)
 
   /**
     * Log a debug message
     *
-    * @param m String message to log
+    * @param message String message to log
     */
-  def debug(m: String): Unit = write(m, LogLevel.DEBUG)
+  def debug(message: String, printToConsole: Boolean = false): Unit = write(message, LogLevel.DEBUG, printToConsole)
 }
