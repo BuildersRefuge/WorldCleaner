@@ -4,7 +4,7 @@ import com.google.gson.{Gson, GsonBuilder}
 import java.io._
 
 import logging.Logger
-import models.{Config, DatabaseConfig, DisposalConfig, FolderConfig}
+import models.{Config, DatabaseConfig, FolderConfig}
 
 import scala.io.Source
 
@@ -31,10 +31,12 @@ object Configuration {
           return config
         }
         else {
+          Logger.debug("Creating config")
           createConfig()
           return null
         }
       }
+      return config
     }
     catch {
       case ioe: IOException => Logger.error("IOException: " + ioe.getMessage)
@@ -84,7 +86,6 @@ object Configuration {
   private def getEmptyConfig: Config = {
     val cfg = new Config()
     cfg.database = new DatabaseConfig
-    cfg.disposal = new DisposalConfig
     cfg.folders = new FolderConfig
     cfg
   }
