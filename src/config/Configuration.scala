@@ -12,7 +12,7 @@ import scala.io.Source
   * Main configuration handler.
   */
 object Configuration {
-  var config: Config = null
+  var config: Config = _
   val configName: String = "world-cleaner.json"
 
   /**
