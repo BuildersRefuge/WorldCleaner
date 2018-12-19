@@ -1,6 +1,6 @@
 package database
 
-import java.sql.{Connection, DriverManager, ResultSet}
+import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 
 import config.Configuration
 import logging.Logger
@@ -33,22 +33,20 @@ class DatabaseManager {
     s"jdbc:mysql://$host:$port/$db?verifyServerCertificate=false&useSSL=true"
   }
 
-  def performInsert(query: String): Boolean = {
-    Logger.info(s"Executing query: $query")
-    // TODO: Create
-    false
+  /**
+    * Get a players UUID from world ids.
+    *
+    * @param x x coordinate of the world
+    * @param z z coordinate of the world
+    * @return uuid of the player
+    */
+  def getPlayerUUIDFromWorld(x: String, z: String): String = {
+    val plotTable: String = conf.database.plotTable
+    val query: String = s"SELECT owner FROM $plotTable WHERE plot_id_x = ? AND plot_id_z = ? LIMIT 1"
+    val statement: PreparedStatement = connection.prepareStatement(query)
+    statement.setString(1, x)
+    statement.setString(2, z)
+    val resultSet: ResultSet = statement.executeQuery()
+    resultSet.getString("owner")
   }
-
-  def performSelect(query: String): ResultSet = {
-    Logger.info(s"Executing query: $query")
-    // TODO: Create
-    null
-  }
-
-  def performDelete(query: String): Boolean = {
-    Logger.info(s"Executing query: $query")
-    // TODO: Create
-    false
-  }
-
 }
