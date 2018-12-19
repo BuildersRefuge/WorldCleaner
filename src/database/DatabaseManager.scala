@@ -3,6 +3,7 @@ package database
 import java.sql.{Connection, DriverManager, ResultSet}
 
 import config.Configuration
+import logging.Logger
 import models.Config
 
 /**
@@ -25,18 +26,29 @@ class DatabaseManager {
     *
     * @return string formatted connection string
     */
-  private def getConnectionString: String = s"jdbc:mysql://${conf.database.host}:${conf.database.port}/${conf.database.database}?verifyServerCertificate=false&useSSL=true"
+  private def getConnectionString: String = {
+    val db: String = conf.database.database
+    val host: String = conf.database.host
+    val port: Int = conf.database.port
+    s"jdbc:mysql://$host:$port/$db?verifyServerCertificate=false&useSSL=true"
+  }
 
   def performInsert(query: String): Boolean = {
-   // TODO: Create
+    Logger.info(s"Executing query: $query")
+    // TODO: Create
+    false
   }
 
-  def performSelect(query : String) : ResultSet = {
+  def performSelect(query: String): ResultSet = {
+    Logger.info(s"Executing query: $query")
     // TODO: Create
+    null
   }
 
-  def performDelete(query : String) : Boolean = {
+  def performDelete(query: String): Boolean = {
+    Logger.info(s"Executing query: $query")
     // TODO: Create
+    false
   }
 
 }
