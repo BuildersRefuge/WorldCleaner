@@ -1,6 +1,7 @@
 package filesystem
 
-import java.io.File
+import java.io.{File, IOException}
+import java.nio.file.{Files, Path, StandardCopyOption}
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -88,9 +89,24 @@ class FileSystemManager {
     targetFolder.getAbsolutePath
   }
 
-
-  def moveFromWorldsToDisposal: Boolean = {
-
+  /**
+    * Move a folder between two folders.
+    *
+    * @param source      path of folder to move
+    * @param destination path of where folder should be moved to.
+    * @return
+    */
+  def moveFolder(source: Path, destination: Path): Boolean = {
+    try {
+      Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE)
+      true
+    } catch {
+      case ioe: IOException =>
+        Logger.error("IOException: " + ioe.getMessage)
+        false
+      case exception: Exception =>
+        Logger.error("Exception: " + exception.getMessage)
+        false
+    }
   }
-
 }
