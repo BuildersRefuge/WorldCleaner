@@ -22,7 +22,11 @@ class DatabaseConfig {
     */
   var database: String = "database"
   /**
-    * Database table
+    * Database table for plots
     */
-  var table: String = "table"
+  var plotTable: String = "plots"
+  /**
+    * Database table for players
+    */
+  var playerTable: String = "players"
 }
