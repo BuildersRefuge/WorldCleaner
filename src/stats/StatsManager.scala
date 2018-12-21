@@ -1,4 +1,7 @@
+package stats
+
 import java.util.concurrent.TimeUnit
+
 object StatsManager {
   private var startTime: Long = _
   private var stopTime: Long = _
@@ -68,14 +71,22 @@ object StatsManager {
     val seconds: Long = TimeUnit.MILLISECONDS.toSeconds(millis)
     millis -= TimeUnit.SECONDS.toMillis(seconds)
     val sb: StringBuilder = new StringBuilder(64)
-    sb.append(days)
-    sb.append(" Days ")
-    sb.append(hours)
-    sb.append(" Hours ")
-    sb.append(minutes)
-    sb.append(" Minutes ")
-    sb.append(seconds)
-    sb.append(" Seconds ")
+    if (days != 0) {
+      sb.append(days)
+      sb.append(" Days ")
+    }
+    if (hours != 0) {
+      sb.append(hours)
+      sb.append(" Hours ")
+    }
+    if (minutes != 0) {
+      sb.append(minutes)
+      sb.append(" Minutes ")
+    }
+    if (seconds != 0) {
+      sb.append(seconds)
+      sb.append(" Seconds ")
+    }
     sb.append(millis)
     sb.append(" Milliseconds")
     sb.toString
