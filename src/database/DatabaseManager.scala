@@ -41,7 +41,7 @@ class DatabaseManager {
     * @return uuid of the player
     */
   def getPlayerUUIDFromWorld(x: String, z: String): String = {
-    if(connection == null) this.setConnection()
+    if (connection == null) this.setConnection()
     val plotTable: String = conf.database.plotTable
     val query: String = s"SELECT owner FROM $plotTable WHERE plot_id_x = ? AND plot_id_z = ? LIMIT 1"
     val statement: PreparedStatement = connection.prepareStatement(query)
