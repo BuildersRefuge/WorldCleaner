@@ -3,7 +3,6 @@ package database
 import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 
 import config.Configuration
-import logging.Logger
 import models.Config
 import stats.StatsManager
 
@@ -51,5 +50,25 @@ class DatabaseManager {
     val resultSet: ResultSet = statement.executeQuery()
     StatsManager.increaseCounter("sql-queries")
     resultSet.getString("owner")
+  }
+
+  /**
+    * Delete a plot record from the database
+    *
+    * @param x    x coordinate of the plot
+    * @param z    z coordinate of the plot
+    * @param uuid uuid of the plot owner
+    * @return boolean true if deleted, false otherwise
+    */
+  def deletePlotEntry(x: String, z: String, uuid: String): Boolean = {
+    if (connection == null) this.setConnection()
+    val plotTable: String = conf.database.plotTable
+    val query: String = s"DELETE FROM $plotTable WHERE plot_id_x = ? AND plot_id_z = ? AND owner = ?"
+    val statement: PreparedStatement = connection.prepareStatement(query)
+    statement.setString(1, x)
+    statement.setString(2, x)
+    statement.setString(3, uuid)
+    StatsManager.increaseCounter("sql-queries")
+    statement.execute()
   }
 }
