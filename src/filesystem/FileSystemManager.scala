@@ -8,6 +8,7 @@ import java.util.Date
 import config.Configuration
 import logging.Logger
 import models.Config
+import stats.StatsManager
 
 class FileSystemManager {
   /**
@@ -33,6 +34,7 @@ class FileSystemManager {
     * @return list of directory paths
     */
   def getDirectoriesMatchingFilter: Array[File] = {
+    StatsManager.createCheckpoint("Starting to fetch folders")
     val allDirectories: Array[File] = getDirectoriesInWorldLocation
     val toProcess: Array[File] = Array()
     for (directory <- allDirectories) {
@@ -40,6 +42,7 @@ class FileSystemManager {
         Logger.info(s"${directory.getAbsolutePath} triggers filter")
       }
     }
+    StatsManager.createCheckpoint("Completed fetching folders")
     toProcess
   }
 
