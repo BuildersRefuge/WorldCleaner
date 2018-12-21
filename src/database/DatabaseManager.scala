@@ -5,6 +5,7 @@ import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 import config.Configuration
 import logging.Logger
 import models.Config
+import stats.StatsManager
 
 /**
   * Manager responsible for handling interaction with the MySQL server.
@@ -48,6 +49,7 @@ class DatabaseManager {
     statement.setString(1, x)
     statement.setString(2, z)
     val resultSet: ResultSet = statement.executeQuery()
+    StatsManager.increaseCounter("sql-queries")
     resultSet.getString("owner")
   }
 }
