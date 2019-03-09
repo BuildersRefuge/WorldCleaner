@@ -3,6 +3,7 @@ package database
 import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 
 import config.Configuration
+import logging.Logger
 import models.Config
 import stats.StatsManager
 
@@ -47,6 +48,7 @@ class DatabaseManager {
     val statement: PreparedStatement = connection.prepareStatement(query)
     statement.setString(1, x)
     statement.setString(2, z)
+    Logger.info(s"Executing query: $statement.toString")
     val resultSet: ResultSet = statement.executeQuery()
     StatsManager.increaseCounter("sql-queries")
     resultSet.getString("owner")
@@ -69,6 +71,10 @@ class DatabaseManager {
     statement.setString(2, x)
     statement.setString(3, uuid)
     StatsManager.increaseCounter("sql-queries")
-    statement.execute()
+
+    Logger.info(s"Executing query: $statement.toString")
+    val result = statement.execute()
+    if (!result) Logger.error("Failed to execute last query")
+    result
   }
 }
