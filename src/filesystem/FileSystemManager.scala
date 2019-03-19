@@ -36,10 +36,11 @@ class FileSystemManager {
   def getDirectoriesMatchingFilter: Array[File] = {
     StatsManager.createCheckpoint("Starting to fetch folders")
     val allDirectories: Array[File] = getDirectoriesInWorldLocation
-    val toProcess: Array[File] = Array()
+    var toProcess: Array[File] = Array()
     for (directory <- allDirectories) {
-      if (notModifiedSinceMatchDate(directory.getAbsolutePath)) {
+      if (!modifiedSinceMatchDate(directory.getAbsolutePath)) {
         Logger.info(s"${directory.getAbsolutePath} triggers filter")
+        toProcess :+= directory
       }
     }
     StatsManager.createCheckpoint("Completed fetching folders")
@@ -50,9 +51,9 @@ class FileSystemManager {
     * Check if a world has not been modified since the match date.
     *
     * @param dir directory path for world
-    * @return true if not modified since, else false.
+    * @return true if modified since, else false.
     */
-  def notModifiedSinceMatchDate(dir: String): Boolean = {
+  def modifiedSinceMatchDate(dir: String): Boolean = {
     // Check if folder contains a level.dat file.
     val levelFile: File = new File(s"$dir/$checkFile")
     if (!levelFile.isFile) {
@@ -70,7 +71,7 @@ class FileSystemManager {
     val modifiedBefore: String = Configuration.getConfig.matchDate
     val modifiedBeforeDate: Date = math.parse(modifiedBefore)
 
-    if (lastModifiedDate.compareTo(modifiedBeforeDate) <= 0) {
+    if (lastModifiedDate.compareTo(modifiedBeforeDate) > 0) {
       Logger.info(s"World at location <$dir> has not been modified after $modifiedBefore", printToConsole = true)
       return true
     }
@@ -85,9 +86,9 @@ class FileSystemManager {
     */
   def getOrCreatePlayerFolder(uuid: String): String = {
     val parentFolder: String = Configuration.getConfig.folders.disposalLocation
-    val targetFolder: File = new File(s"$parentFolder/$checkFile")
+    val targetFolder: File = new File(s"$parentFolder/$uuid")
     if (!targetFolder.exists()) {
-      targetFolder.createNewFile()
+      targetFolder.mkdirs()
     }
     targetFolder.getAbsolutePath
   }

@@ -39,7 +39,7 @@ class DatabaseManager {
     *
     * @param x x coordinate of the world
     * @param z z coordinate of the world
-    * @return uuid of the player
+    * @return string|null uuid of the player
     */
   def getPlayerUUIDFromWorld(x: String, z: String): String = {
     if (connection == null) this.setConnection()
@@ -48,10 +48,13 @@ class DatabaseManager {
     val statement: PreparedStatement = connection.prepareStatement(query)
     statement.setString(1, x)
     statement.setString(2, z)
-    Logger.info(s"Executing query: $statement.toString")
+    Logger.info(s"Executing query: " + statement.toString)
     val resultSet: ResultSet = statement.executeQuery()
     StatsManager.increaseCounter("sql-queries")
-    resultSet.getString("owner")
+    if (resultSet.next()) {
+      return resultSet.getString("owner")
+    }
+    null
   }
 
   /**
@@ -68,13 +71,13 @@ class DatabaseManager {
     val query: String = s"DELETE FROM $plotTable WHERE plot_id_x = ? AND plot_id_z = ? AND owner = ?"
     val statement: PreparedStatement = connection.prepareStatement(query)
     statement.setString(1, x)
-    statement.setString(2, x)
+    statement.setString(2, z)
     statement.setString(3, uuid)
     StatsManager.increaseCounter("sql-queries")
 
-    Logger.info(s"Executing query: $statement.toString")
-    val result = statement.execute()
-    if (!result) Logger.error("Failed to execute last query")
-    result
+    Logger.info(s"Executing query: " + statement.toString)
+    val result = statement.executeUpdate()
+    if (result == 0) Logger.error("Failed to execute last query")
+    result != 0
   }
 }

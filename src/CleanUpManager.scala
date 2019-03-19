@@ -14,26 +14,32 @@ object CleanUpManager {
     val toRemove: Array[File] = fsm.getDirectoriesMatchingFilter
     StatsManager.createCheckpoint("Starting to process folders")
     for (folder <- toRemove) {
-      StatsManager.increaseCounter("worlds-processed")
-      Logger.info(s"Running for <$folder>")
-      val id: (String, String) = parseIdsFromPath(folder.getAbsolutePath)
-      val ownerUUID: String = dbm.getPlayerUUIDFromWorld(id._1, id._2)
-      if (ownerUUID == null) {
-        Logger.error(s"Failed to fetch player details for world ${id.toString()}")
-        StatsManager.increaseCounter("worlds-failed")
-      } else {
-        val worldItem: WorldItem = new WorldItem(id._1, id._2, ownerUUID)
-        val destinationLocation: File = new File(worldItem.getPlayerDestinationPath)
-        if (fsm.moveFolder(folder.toPath, destinationLocation.toPath)) {
-          Logger.info(s"Moved folder: Source <${folder.getAbsolutePath}> Destination: <${destinationLocation.getAbsolutePath}>")
-          StatsManager.increaseCounter("worlds-moved")
-          if (!dbm.deletePlotEntry(worldItem.x, worldItem.z, worldItem.playerUUID)) {
-            Logger.error(s"Failed to delete database entry for ${worldItem.x};${worldItem.z}")
-          }
-        } else {
-          Logger.info(s"Failed to move folder: Source <${folder.getAbsolutePath}> Destination: <${destinationLocation.getAbsolutePath}>")
+      try {
+        StatsManager.increaseCounter("worlds-processed")
+        Logger.info(s"Running for <$folder>")
+        val id: (String, String) = parseIdsFromPath(folder.getAbsolutePath)
+        val ownerUUID: String = dbm.getPlayerUUIDFromWorld(id._1, id._2)
+        if (ownerUUID == null) {
+          Logger.error(s"Failed to fetch player details for world ${id.toString()}")
           StatsManager.increaseCounter("worlds-failed")
+        } else {
+          val worldItem: WorldItem = new WorldItem(id._1, id._2, ownerUUID)
+          val destinationLocation: File = new File(worldItem.getPlayerDestinationPath + "/" + id._1 + "," + id._2)
+          if (fsm.moveFolder(folder.toPath, destinationLocation.toPath)) {
+            Logger.info(s"Moved folder: Source <${folder.getAbsolutePath}> Destination: <${destinationLocation.getAbsolutePath}>")
+            StatsManager.increaseCounter("worlds-moved")
+            if (!dbm.deletePlotEntry(worldItem.x, worldItem.z, worldItem.playerUUID)) {
+              Logger.error(s"Failed to delete database entry for ${worldItem.x};${worldItem.z}")
+            }
+          } else {
+            Logger.info(s"Failed to move folder: Source <${folder.getAbsolutePath}> Destination: <${destinationLocation.getAbsolutePath}>")
+            StatsManager.increaseCounter("worlds-failed")
+          }
         }
+      } catch {
+        case e: Exception =>
+          Logger.error(s"Exception for folder: Source <${folder.getAbsolutePath}>", printToConsole = true)
+          Logger.error(e.toString)
       }
     }
     StatsManager.createCheckpoint("Done processing folders")

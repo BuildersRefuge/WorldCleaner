@@ -24,9 +24,5 @@ class DatabaseConfig {
   /**
     * Database table for plots
     */
-  var plotTable: String = "plots"
-  /**
-    * Database table for players
-    */
-  var playerTable: String = "players"
+  var plotTable: String = "plot"
 }

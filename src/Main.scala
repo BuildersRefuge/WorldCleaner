@@ -27,8 +27,7 @@ object Main {
       Logger.info("Done creating counters", printToConsole = true)
       StatsManager.createCheckpoint("Initialization completed")
       Logger.info("Starting cleaning process")
-      Thread.sleep(3000)
-
+      CleanUpManager.run
       StatsManager.stop()
       val stats: String = StatsManager.toString
       Logger.info(stats, printToConsole = true)
