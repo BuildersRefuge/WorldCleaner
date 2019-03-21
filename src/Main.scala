@@ -12,6 +12,10 @@ object Main {
       Logger.info("Doing initial checks", printToConsole = true)
       Logger.info("Trying to load config", printToConsole = true)
       val config: Config = Configuration.getConfig
+      if (config == null) {
+        System.out.println("Please update world-cleaner.json with your configuration and restart WorldCleaner")
+        return
+      }
       Logger.info("Config loaded successfully", printToConsole = true)
       Logger.info("Trying to connect to database", printToConsole = true)
       //new DatabaseManager().setConnection()
