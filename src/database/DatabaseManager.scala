@@ -46,7 +46,7 @@ class DatabaseManager {
     val statement: PreparedStatement = connection.prepareStatement(query)
     statement.setString(1, x)
     statement.setString(2, z)
-    Logger.write(s"Executing query: " + statement.toString, LogLevel.DATABASE)
+    logStatement(statement)
     val resultSet: ResultSet = statement.executeQuery()
     StatsManager.increaseCounter("sql-queries")
     if (resultSet.next()) {
@@ -73,9 +73,15 @@ class DatabaseManager {
     statement.setString(3, uuid)
     StatsManager.increaseCounter("sql-queries")
 
-    Logger.write(s"Executing query: " + statement.toString, LogLevel.DATABASE)
+    logStatement(statement)
     val result = statement.executeUpdate()
     if (result == 0) Logger.error("Failed to execute last query")
     result != 0
+  }
+
+  private def logStatement(preparedStatement: PreparedStatement): Unit = {
+    Logger.write(s"Executing query: " + preparedStatement.toString.replaceAll(
+      "com.mysql.cj.jdbc.ClientPreparedStatement:", ""
+    ), LogLevel.DATABASE)
   }
 }

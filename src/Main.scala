@@ -8,7 +8,7 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     StatsManager.start()
-    Logger.info("WorldCleaner starting")
+    Logger.info("WorldCleaner starting", printToConsole = true)
     try {
       Logger.info("Doing initial checks", printToConsole = true)
       Logger.info("Trying to load config", printToConsole = true)
@@ -24,13 +24,13 @@ object Main {
       Logger.info("Initial checks passed", printToConsole = true)
       Logger.info(s"World location set to: ${config.folders.worldLocation}", printToConsole = true)
       Logger.info(s"Disposal location set to: ${config.folders.disposalLocation}", printToConsole = true)
-      Logger.info("Creating counters", printToConsole = true)
+      Logger.info("Creating stats counters", printToConsole = true)
       StatsManager.addCounter("sql-queries")
       StatsManager.addCounter("worlds-processed")
       StatsManager.addCounter("worlds-moved")
       StatsManager.addCounter("worlds-failed")
-      Logger.info("Done creating counters", printToConsole = true)
-      Logger.info("Starting cleaning process")
+      Logger.info("Done creating stats counters", printToConsole = true)
+      Logger.info("Starting cleaning process", printToConsole = true)
       CleanUpManager.run
       StatsManager.stop()
       val stats: String = StatsManager.toString
@@ -40,6 +40,6 @@ object Main {
         Logger.error("Initial checks failed, see logfile for more info", printToConsole = true)
         Logger.error(e.toString)
     }
-    Logger.info("WorldCleaner stopping")
+    Logger.info("WorldCleaner stopping", printToConsole = true)
   }
 }

@@ -77,4 +77,15 @@ object Logger {
     * @param message String message to log
     */
   def debug(message: String, printToConsole: Boolean = false): Unit = write(message, LogLevel.DEBUG, printToConsole)
+
+  /**
+    * Log a message only to the console
+    *
+    * @param message message to log
+    * @param logLevel LogLevel severity of the logged message.
+    */
+  def printToOnlyConsole(message: String, logLevel: LogLevel.Value): Unit = {
+    val outputString = getCurrentTime + " : " + "[" + logLevel.toString + "]" + " -> " + message
+    System.out.println(outputString)
+  }
 }

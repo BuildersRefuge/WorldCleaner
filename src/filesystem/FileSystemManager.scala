@@ -8,7 +8,6 @@ import java.util.Date
 import config.Configuration
 import logging.Logger
 import models.Config
-import stats.StatsManager
 
 class FileSystemManager {
   /**
@@ -34,15 +33,15 @@ class FileSystemManager {
     * @return list of directory paths
     */
   def getDirectoriesMatchingFilter: Array[File] = {
-    val allDirectories: Array[File] = getDirectoriesInWorldLocation
-    var toProcess: Array[File] = Array()
-    for (directory <- allDirectories) {
-      if (!modifiedSinceMatchDate(directory.getAbsolutePath)) {
-        Logger.info(s"${directory.getAbsolutePath} triggers filter")
-        toProcess :+= directory
+    val allWorlds: Array[File] = getDirectoriesInWorldLocation
+    var unmodifiedWorlds: Array[File] = Array()
+    for (world <- allWorlds) {
+      if (!modifiedSinceMatchDate(world.getAbsolutePath)) {
+        Logger.info(s"${world.getAbsolutePath} triggers filter")
+        unmodifiedWorlds :+= world
       }
     }
-    toProcess
+    unmodifiedWorlds
   }
 
   /**
