@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit
 object StatsManager {
   private var startTime: Long = _
   private var stopTime: Long = _
-  private var checkpoints: Array[(String, Long)] = Array[(String, Long)]()
   private var counters: Array[(String, Int)] = Array[(String, Int)]()
 
   def start(): Unit = {
@@ -14,10 +13,6 @@ object StatsManager {
 
   def stop(): Unit = {
     this.stopTime = System.nanoTime()
-  }
-
-  def createCheckpoint(name: String): Unit = {
-    checkpoints = checkpoints :+ (name, System.nanoTime())
   }
 
   def addCounter(name: String, initialValue: Int = 0): Unit = {
@@ -38,19 +33,6 @@ object StatsManager {
     val builder: StringBuilder = StringBuilder.newBuilder
     val elapsedMilli = stopTime - startTime
     builder.append(s"Elapsed time : ${getDurationBreakdown(elapsedMilli / 1000000)}\n")
-    builder.append("---------CHECKPOINTS---------\n")
-    for (i <- checkpoints.indices) {
-      val checkpoint: (String, Long) = checkpoints(i)
-      if (i == 0) {
-        val duration: Long = checkpoint._2 - startTime
-        builder.append(s"${checkpoint._1}: ${getDurationBreakdown(duration / 1000000)}\n")
-      } else {
-        val previousCheckpoint: (String, Long) = checkpoints(i - 1)
-        val checkpoint: (String, Long) = checkpoints(i)
-        val duration: Long = checkpoint._2 - previousCheckpoint._2
-        builder.append(s"${checkpoint._1}: ${getDurationBreakdown(duration / 1000000)}\n")
-      }
-    }
     builder.append("---------COUNTERS---------\n")
     for (i <- counters.indices) {
       val counter: (String, Int) = counters(i)

@@ -1,5 +1,5 @@
 package logging
 
 object LogLevel extends Enumeration {
-  val DEBUG, INFO, WARNING, ERROR = Value
+  val DEBUG, INFO, WARNING, ERROR, DATABASE = Value
 }

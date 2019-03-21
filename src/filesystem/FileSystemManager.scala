@@ -34,7 +34,6 @@ class FileSystemManager {
     * @return list of directory paths
     */
   def getDirectoriesMatchingFilter: Array[File] = {
-    StatsManager.createCheckpoint("Starting to fetch folders")
     val allDirectories: Array[File] = getDirectoriesInWorldLocation
     var toProcess: Array[File] = Array()
     for (directory <- allDirectories) {
@@ -43,7 +42,6 @@ class FileSystemManager {
         toProcess :+= directory
       }
     }
-    StatsManager.createCheckpoint("Completed fetching folders")
     toProcess
   }
 

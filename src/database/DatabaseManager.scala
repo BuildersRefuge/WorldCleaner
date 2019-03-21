@@ -3,8 +3,8 @@ package database
 import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 
 import config.Configuration
-import logging.Logger
-import models.Config
+import logging.{LogLevel, Logger}
+import models.{Config, DatabaseConfig}
 import stats.StatsManager
 
 /**
@@ -28,10 +28,8 @@ class DatabaseManager {
     * @return string formatted connection string
     */
   private def getConnectionString: String = {
-    val db: String = conf.database.database
-    val host: String = conf.database.host
-    val port: Int = conf.database.port
-    s"jdbc:mysql://$host:$port/$db?verifyServerCertificate=false&useSSL=true"
+    val db: DatabaseConfig = conf.database
+    s"jdbc:mysql://${db.host}:${db.port}/${db.database}?verifyServerCertificate=false&useSSL=true"
   }
 
   /**
@@ -48,7 +46,7 @@ class DatabaseManager {
     val statement: PreparedStatement = connection.prepareStatement(query)
     statement.setString(1, x)
     statement.setString(2, z)
-    Logger.info(s"Executing query: " + statement.toString)
+    Logger.write(s"Executing query: " + statement.toString, LogLevel.DATABASE)
     val resultSet: ResultSet = statement.executeQuery()
     StatsManager.increaseCounter("sql-queries")
     if (resultSet.next()) {
@@ -75,7 +73,7 @@ class DatabaseManager {
     statement.setString(3, uuid)
     StatsManager.increaseCounter("sql-queries")
 
-    Logger.info(s"Executing query: " + statement.toString)
+    Logger.write(s"Executing query: " + statement.toString, LogLevel.DATABASE)
     val result = statement.executeUpdate()
     if (result == 0) Logger.error("Failed to execute last query")
     result != 0

@@ -12,7 +12,6 @@ object CleanUpManager {
     val dbm: DatabaseManager = new DatabaseManager()
 
     val toRemove: Array[File] = fsm.getDirectoriesMatchingFilter
-    StatsManager.createCheckpoint("Starting to process folders")
     for (folder <- toRemove) {
       try {
         StatsManager.increaseCounter("worlds-processed")
@@ -42,7 +41,6 @@ object CleanUpManager {
           Logger.error(e.toString)
       }
     }
-    StatsManager.createCheckpoint("Done processing folders")
   }
 
   def parseIdsFromPath(path: String): (String, String) = {

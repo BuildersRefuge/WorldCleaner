@@ -1,4 +1,5 @@
 import config.Configuration
+import database.DatabaseManager
 import logging.Logger
 import models.Config
 import stats.StatsManager
@@ -18,7 +19,7 @@ object Main {
       }
       Logger.info("Config loaded successfully", printToConsole = true)
       Logger.info("Trying to connect to database", printToConsole = true)
-      //new DatabaseManager().setConnection()
+      new DatabaseManager().setConnection()
       Logger.info("Connected to database", printToConsole = true)
       Logger.info("Initial checks passed", printToConsole = true)
       Logger.info(s"World location set to: ${config.folders.worldLocation}", printToConsole = true)
@@ -29,7 +30,6 @@ object Main {
       StatsManager.addCounter("worlds-moved")
       StatsManager.addCounter("worlds-failed")
       Logger.info("Done creating counters", printToConsole = true)
-      StatsManager.createCheckpoint("Initialization completed")
       Logger.info("Starting cleaning process")
       CleanUpManager.run
       StatsManager.stop()
