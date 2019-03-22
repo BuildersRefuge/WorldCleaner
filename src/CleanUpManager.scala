@@ -35,7 +35,7 @@ object CleanUpManager {
           Logger.printToOnlyConsole("Starting to move world: " + id.toString, LogLevel.INFO)
 
           // Move the world folder from its original location to the disposal location
-          if (fsm.moveFolder(world.toPath, destinationLocation.toPath)) {
+          if (fsm.moveFolder(world, destinationLocation)) {
             Logger.info(s"Moved folder: Source <${world.getAbsolutePath}> Destination: <${destinationLocation.getAbsolutePath}>")
             Logger.printToOnlyConsole("World " + id.toString + " successfully moved", LogLevel.INFO)
             StatsManager.increaseCounter("worlds-moved")

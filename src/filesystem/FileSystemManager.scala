@@ -8,6 +8,7 @@ import java.util.Date
 import config.Configuration
 import logging.Logger
 import models.Config
+import org.apache.commons.io.FileUtils
 
 class FileSystemManager {
   /**
@@ -97,9 +98,9 @@ class FileSystemManager {
     * @param destination path of where folder should be moved to.
     * @return
     */
-  def moveFolder(source: Path, destination: Path): Boolean = {
+  def moveFolder(source: File, destination: File): Boolean = {
     try {
-      Files.move(source, destination, StandardCopyOption.ATOMIC_MOVE)
+      FileUtils.moveDirectory(source, destination)
       true
     } catch {
       case ioe: IOException =>
