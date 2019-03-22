@@ -5,7 +5,7 @@ import java.sql.{Connection, DriverManager, PreparedStatement, ResultSet}
 import config.Configuration
 import logging.{LogLevel, Logger}
 import models.{Config, DatabaseConfig}
-import stats.StatsManager
+import stats.RuntimeStatsManager
 
 /**
   * Manager responsible for handling interaction with the MySQL server.
@@ -48,7 +48,7 @@ class DatabaseManager {
     statement.setString(2, z)
     logStatement(statement)
     val resultSet: ResultSet = statement.executeQuery()
-    StatsManager.increaseCounter("sql-queries")
+    RuntimeStatsManager.increaseCounter("sql-queries")
     if (resultSet.next()) {
       return resultSet.getString("owner")
     }
@@ -71,7 +71,7 @@ class DatabaseManager {
     statement.setString(1, x)
     statement.setString(2, z)
     statement.setString(3, uuid)
-    StatsManager.increaseCounter("sql-queries")
+    RuntimeStatsManager.increaseCounter("sql-queries")
 
     logStatement(statement)
     val result = statement.executeUpdate()

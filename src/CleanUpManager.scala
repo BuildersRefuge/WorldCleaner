@@ -4,7 +4,7 @@ import database.DatabaseManager
 import filesystem.FileSystemManager
 import logging.{LogLevel, Logger}
 import models.{WorldId, WorldItem}
-import stats.StatsManager
+import stats.RuntimeStatsManager
 
 object CleanUpManager {
   def run(): Unit = {
@@ -15,7 +15,7 @@ object CleanUpManager {
 
     for (world <- toRemove) {
       try {
-        StatsManager.increaseCounter("worlds-processed")
+        RuntimeStatsManager.increaseCounter("worlds-processed")
         Logger.info(s"Running for <$world>")
 
         // Get the id from the world folder
@@ -27,7 +27,7 @@ object CleanUpManager {
         if (ownerUUID == null) {
           Logger.error(s"Failed to fetch player details for world ${id.toString}")
           Logger.printToOnlyConsole("Failed to process world: " + id.toString + "  (Invalid owner)", LogLevel.ERROR)
-          StatsManager.increaseCounter("worlds-failed")
+          RuntimeStatsManager.increaseCounter("worlds-failed")
         } else {
           // Create a wrapper around the world
           val worldItem: WorldItem = new WorldItem(id, ownerUUID)
@@ -38,7 +38,7 @@ object CleanUpManager {
           if (fsm.moveFolder(world, destinationLocation)) {
             Logger.info(s"Moved folder: Source <${world.getAbsolutePath}> Destination: <${destinationLocation.getAbsolutePath}>")
             Logger.printToOnlyConsole("World " + id.toString + " successfully moved", LogLevel.INFO)
-            StatsManager.increaseCounter("worlds-moved")
+            RuntimeStatsManager.increaseCounter("worlds-moved")
 
             // Delete the entry from the database so the world can be reused
             if (!dbm.deletePlotEntry(worldItem.id.getX, worldItem.id.getZ, worldItem.playerUUID)) {
@@ -49,7 +49,7 @@ object CleanUpManager {
             // Folder failed to move, or parts of it could have been moved
             Logger.info(s"Failed to move folder: Source <${world.getAbsolutePath}> Destination: <${destinationLocation.getAbsolutePath}>")
             Logger.printToOnlyConsole("Failed to process world " + id.toString, LogLevel.ERROR)
-            StatsManager.increaseCounter("worlds-failed")
+            RuntimeStatsManager.increaseCounter("worlds-failed")
           }
         }
       } catch {

@@ -2,12 +2,12 @@ import config.Configuration
 import database.DatabaseManager
 import logging.Logger
 import models.Config
-import stats.StatsManager
+import stats.RuntimeStatsManager
 
 object Main {
 
   def main(args: Array[String]): Unit = {
-    StatsManager.start()
+    RuntimeStatsManager.start()
     Logger.info("WorldCleaner starting", printToConsole = true)
     try {
       Logger.info("Doing initial checks", printToConsole = true)
@@ -25,15 +25,15 @@ object Main {
       Logger.info(s"World location set to: ${config.folders.worldLocation}", printToConsole = true)
       Logger.info(s"Disposal location set to: ${config.folders.disposalLocation}", printToConsole = true)
       Logger.info("Creating stats counters", printToConsole = true)
-      StatsManager.addCounter("sql-queries")
-      StatsManager.addCounter("worlds-processed")
-      StatsManager.addCounter("worlds-moved")
-      StatsManager.addCounter("worlds-failed")
+      RuntimeStatsManager.addCounter("sql-queries")
+      RuntimeStatsManager.addCounter("worlds-processed")
+      RuntimeStatsManager.addCounter("worlds-moved")
+      RuntimeStatsManager.addCounter("worlds-failed")
       Logger.info("Done creating stats counters", printToConsole = true)
       Logger.info("Starting cleaning process", printToConsole = true)
       CleanUpManager.run
-      StatsManager.stop()
-      val stats: String = StatsManager.toString
+      RuntimeStatsManager.stop()
+      val stats: String = RuntimeStatsManager.toString
       Logger.info(stats, printToConsole = true)
     } catch {
       case e: Exception =>

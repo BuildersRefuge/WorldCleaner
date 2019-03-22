@@ -2,7 +2,7 @@ package stats
 
 import java.util.concurrent.TimeUnit
 
-object StatsManager {
+object RuntimeStatsManager {
   private var startTime: Long = _
   private var stopTime: Long = _
   private var counters: Array[(String, Int)] = Array[(String, Int)]()
