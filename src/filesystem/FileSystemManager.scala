@@ -3,7 +3,7 @@ package filesystem
 import java.io.{File, IOException}
 import java.nio.file.{Files, Path, StandardCopyOption}
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.{Calendar, Date}
 
 import config.Configuration
 import logging.Logger
@@ -53,23 +53,18 @@ class FileSystemManager {
     */
   def modifiedSinceMatchDate(dir: String): Boolean = {
     // Check if folder contains a level.dat file.
-    val levelFile: File = new File(s"$dir/$checkFile")
+    val levelFile: File = FileUtils.getFile(s"$dir/$checkFile")
     if (!levelFile.isFile) {
       Logger.warning(s"No level.dat file found in $dir")
       return false
     }
     val math: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd")
 
-    // Get the date at last modification.
-    val lastModified: Long = levelFile.lastModified()
-    val formattedDate = math.format(lastModified)
-    val lastModifiedDate: Date = math.parse(formattedDate)
-
     // Get the filter date from config.
     val modifiedBefore: String = Configuration.getConfig.matchDate
     val modifiedBeforeDate: Date = math.parse(modifiedBefore)
 
-    if (lastModifiedDate.compareTo(modifiedBeforeDate) > 0) {
+    if (!FileUtils.isFileOlder(levelFile, modifiedBeforeDate)) {
       Logger.info(s"World at location <$dir> has not been modified after $modifiedBefore", printToConsole = true)
       return true
     }
@@ -83,8 +78,11 @@ class FileSystemManager {
     * @return path of player folder
     */
   def getOrCreatePlayerFolder(uuid: String): String = {
+    val dateFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd")
+    val date = dateFormat.format(Calendar.getInstance().getTime)
     val parentFolder: String = Configuration.getConfig.folders.disposalLocation
-    val targetFolder: File = new File(s"$parentFolder/$uuid")
+    val targetFolder: File = FileUtils.getFile(s"$parentFolder/$date/$uuid")
+
     if (!targetFolder.exists()) {
       targetFolder.mkdirs()
     }
