@@ -31,8 +31,9 @@ worlds\
 ```
 ``` 
 worlds\
-    owner-uuid\
-        -1,1\
-        0,0\
-        1,-1\
+    current-date\
+        owner-uuid\
+            -1,1\
+            0,0\
+            1,-1\
 ```
