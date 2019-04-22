@@ -13,6 +13,26 @@
 ---
 # WorldCleaner
 
-WorldCleaner is a  utility to clean up old/un-accessed worlds from PlotSquared from both filesystem and database.
-
-Currently in development, more details and instructions to come later. 
+WorldCleaner is a utility to clean up worlds that have not been updated after a specific date. It will move the 
+unchanged worlds to a dedicated location specified in the config file. It will also delete the world entry from the 
+database to allow the world id to be reused.
+ 
+ 
+### How it works
+Every world contains a `level.dat` file and it is this file WorldCleaner checks. The `matchDate`specified 
+ 
+### Folder structure
+The target folder structured is 
+``` 
+worlds\
+    -1,1\
+     0,0\
+    1,-1\
+```
+``` 
+worlds\
+    owner-uuid\
+        -1,1\
+        0,0\
+        1,-1\
+```
